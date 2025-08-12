@@ -12,6 +12,7 @@
             --cinza-claro: #f0f0f0;
             --branco: #ffffff;
             --texto: #333;
+            --sombra: rgba(0, 0, 0, 0.1);
         }
         
         * {
@@ -59,10 +60,15 @@
             text-decoration: none;
             font-weight: bold;
             border-radius: 5px;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.2s ease;
         }
         
         nav a:hover {
+            background-color: var(--azul);
+            transform: scale(1.05);
+        }
+        
+        nav a.ativo {
             background-color: var(--azul);
         }
         
@@ -72,8 +78,8 @@
             background-color: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease-in-out;
+            box-shadow: 0 8px 16px var(--sombra);
+            transition: opacity 0.4s ease-in-out;
         }
         
         h2 {
@@ -90,7 +96,7 @@
             max-height: 400px;
             object-fit: cover;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px var(--sombra);
             margin-top: 20px;
         }
         
@@ -113,6 +119,12 @@
             section {
                 margin: 20px 10px;
             }
+            nav {
+                flex-direction: column;
+            }
+            nav a {
+                margin: 6px 0;
+            }
         }
     </style>
 </head>
@@ -125,17 +137,17 @@
     </header>
 
     <nav>
-        <a href="#" onclick="mostrarSecao('cultura')">Cultura</a>
-        <a href="#" onclick="mostrarSecao('artistas')">Artistas</a>
-        <a href="#" onclick="mostrarSecao('qualidade')">Qualidade de Vida</a>
-        <a href="#" onclick="mostrarSecao('turismo')">Turismo</a>
+        <a href="#" class="ativo" onclick="mostrarSecao('cultura', this)">Cultura</a>
+        <a href="#" onclick="mostrarSecao('artistas', this)">Artistas</a>
+        <a href="#" onclick="mostrarSecao('qualidade', this)">Qualidade de Vida</a>
+        <a href="#" onclick="mostrarSecao('turismo', this)">Turismo</a>
     </nav>
 
     <section id="cultura">
         <h2>Aspectos Culturais</h2>
         <p>A cultura argentina é rica e diversificada, com fortes influências europeias, especialmente da Espanha e da Itália. A paixão pelo futebol, o tango e a gastronomia são elementos marcantes do dia a dia argentino. Festivais, literatura e cinema também
             desempenham papéis importantes na identidade nacional.</p>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Tango_porteno.jpg/800px-Tango_porteno.jpg" alt="Casal dançando tango">
+
     </section>
 
     <section id="artistas" class="hidden">
@@ -147,13 +159,13 @@
             <li><strong>Jorge Luis Borges</strong> - um dos maiores escritores do século XX.</li>
             <li><strong>Diego Maradona</strong> e <strong>Lionel Messi</strong> - ídolos do futebol mundial.</li>
         </ul>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Astor_Piazzolla_con_bandoneon.jpg/800px-Astor_Piazzolla_con_bandoneon.jpg" alt="Astor Piazzolla com bandoneón">
+
     </section>
 
     <section id="qualidade" class="hidden">
         <h2>Qualidade de Vida</h2>
         <p>A Argentina oferece uma boa qualidade de vida em muitas regiões, com acesso à educação gratuita, saúde pública e uma rica vida cultural. Cidades como Buenos Aires, Mendoza e Córdoba se destacam por sua infraestrutura, opções de lazer e gastronomia.</p>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Buenos_Aires_-_Argentina.jpg/800px-Buenos_Aires_-_Argentina.jpg" alt="Vista de Buenos Aires">
+
     </section>
 
     <section id="turismo" class="hidden">
@@ -166,23 +178,25 @@
             <li><strong>Mendoza</strong> – famosa por seus vinhos e paisagens andinas.</li>
             <li><strong>Bariloche</strong> – destino de inverno com montanhas e lagos.</li>
         </ul>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Iguazu_Falls%2C_Brazil%2C_Argentina.jpg/800px-Iguazu_Falls%2C_Brazil%2C_Argentina.jpg" alt="Cataratas do Iguaçu">
+
     </section>
 
-    <footer>
 
-    </footer>
 
     <script>
-        function mostrarSecao(id) {
+        function mostrarSecao(id, linkClicado) {
             const secoes = document.querySelectorAll("section");
+            const links = document.querySelectorAll("nav a");
+
             secoes.forEach(secao => {
-                if (secao.id === id) {
-                    secao.classList.remove("hidden");
-                } else {
-                    secao.classList.add("hidden");
-                }
+                secao.classList.add("hidden");
             });
+
+            document.getElementById(id).classList.remove("hidden");
+
+            // Atualiza o estilo do menu ativo
+            links.forEach(link => link.classList.remove("ativo"));
+            if (linkClicado) linkClicado.classList.add("ativo");
         }
     </script>
 

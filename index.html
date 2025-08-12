@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Descubra a Argentina</title>
+    <style>
+         :root {
+            --azul: #0077b6;
+            --azul-escuro: #023e8a;
+            --cinza-claro: #f0f0f0;
+            --branco: #ffffff;
+            --texto: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cinza-claro);
+            color: var(--texto);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--azul), var(--azul-escuro));
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+        
+        nav {
+            background-color: var(--azul-escuro);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 10px 0;
+        }
+        
+        nav a {
+            color: white;
+            padding: 12px 18px;
+            margin: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        nav a:hover {
+            background-color: var(--azul);
+        }
+        
+        section {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        h2 {
+            color: var(--azul-escuro);
+            margin-bottom: 15px;
+        }
+        
+        ul {
+            margin-left: 20px;
+        }
+        
+        img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        
+        footer {
+            background-color: var(--azul);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            section {
+                margin: 20px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Descubra a Argentina</h1>
+        <p>Cultura, Arte, Qualidade de Vida e Turismo</p>
+    </header>
+
+    <nav>
+        <a href="#" onclick="mostrarSecao('cultura')">Cultura</a>
+        <a href="#" onclick="mostrarSecao('artistas')">Artistas</a>
+        <a href="#" onclick="mostrarSecao('qualidade')">Qualidade de Vida</a>
+        <a href="#" onclick="mostrarSecao('turismo')">Turismo</a>
+    </nav>
+
+    <section id="cultura">
+        <h2>Aspectos Culturais</h2>
+        <p>A cultura argentina é rica e diversificada, com fortes influências europeias, especialmente da Espanha e da Itália. A paixão pelo futebol, o tango e a gastronomia são elementos marcantes do dia a dia argentino. Festivais, literatura e cinema também
+            desempenham papéis importantes na identidade nacional.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Tango_porteno.jpg/800px-Tango_porteno.jpg" alt="Casal dançando tango">
+    </section>
+
+    <section id="artistas" class="hidden">
+        <h2>Artistas Famosos</h2>
+        <p>A Argentina é berço de grandes nomes da arte e da música, como:</p>
+        <ul>
+            <li><strong>Mercedes Sosa</strong> - cantora símbolo da música folclórica.</li>
+            <li><strong>Astor Piazzolla</strong> - revolucionou o tango com influências do jazz.</li>
+            <li><strong>Jorge Luis Borges</strong> - um dos maiores escritores do século XX.</li>
+            <li><strong>Diego Maradona</strong> e <strong>Lionel Messi</strong> - ídolos do futebol mundial.</li>
+        </ul>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Astor_Piazzolla_con_bandoneon.jpg/800px-Astor_Piazzolla_con_bandoneon.jpg" alt="Astor Piazzolla com bandoneón">
+    </section>
+
+    <section id="qualidade" class="hidden">
+        <h2>Qualidade de Vida</h2>
+        <p>A Argentina oferece uma boa qualidade de vida em muitas regiões, com acesso à educação gratuita, saúde pública e uma rica vida cultural. Cidades como Buenos Aires, Mendoza e Córdoba se destacam por sua infraestrutura, opções de lazer e gastronomia.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Buenos_Aires_-_Argentina.jpg/800px-Buenos_Aires_-_Argentina.jpg" alt="Vista de Buenos Aires">
+    </section>
+
+    <section id="turismo" class="hidden">
+        <h2>Pontos Turísticos</h2>
+        <p>A Argentina é um destino turístico incrível com paisagens variadas e atrações únicas:</p>
+        <ul>
+            <li><strong>Buenos Aires</strong> – capital vibrante, com arquitetura elegante e vida noturna animada.</li>
+            <li><strong>Patagônia</strong> – ideal para amantes da natureza e aventura.</li>
+            <li><strong>Cataratas do Iguaçu</strong> – uma das maravilhas naturais do mundo.</li>
+            <li><strong>Mendoza</strong> – famosa por seus vinhos e paisagens andinas.</li>
+            <li><strong>Bariloche</strong> – destino de inverno com montanhas e lagos.</li>
+        </ul>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Iguazu_Falls%2C_Brazil%2C_Argentina.jpg/800px-Iguazu_Falls%2C_Brazil%2C_Argentina.jpg" alt="Cataratas do Iguaçu">
+    </section>
+
+    <footer>
+
+    </footer>
+
+    <script>
+        function mostrarSecao(id) {
+            const secoes = document.querySelectorAll("section");
+            secoes.forEach(secao => {
+                if (secao.id === id) {
+                    secao.classList.remove("hidden");
+                } else {
+                    secao.classList.add("hidden");
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

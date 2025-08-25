@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Visita Argentina — Inspiración, destinos y experiencias</title>
+    <meta name="description" content="Inspírate para viajar por Argentina: destinos, experiencias, itinerarios y consejos prácticos.">
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <!-- Leaflet para el mapa interactivo -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+         :root {
+            --bg: #0b0e14;
+            --card: #111624;
+            --muted: #7f8da2;
+            --text: #ecf1f7;
+            --brand: #4cc9f0;
+            --brand-2: #f72585;
+            --accent: #bde0fe;
+            --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+            --radius: 18px;
+            --radius-sm: 12px;
+            --maxw: 1200px;
+        }
+        
+        * {
+            box-sizing: border-box
+        }
+        
+        html {
+            scroll-behavior: smooth
+        }
+        
+        body {
+            margin: 0;
+            font-family: System-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.55;
+        }
+        
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+        
+        img {
+            max-width: 100%;
+            display: block
+        }
+        /* ===== Header ===== */
+        
+        .header {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 50;
+            padding: 14px 20px;
+            transition: all .35s ease
+        }
+        
+        .header-inner {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            letter-spacing: .3px
+        }
+        
+        .brand-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            display: grid;
+            place-items: center;
+            font-weight: 900
+        }
+        
+        .nav {
+            display: flex;
+            gap: 22px;
+            align-items: center
+        }
+        
+        .nav a {
+            opacity: .9
+        }
+        
+        .nav a:hover {
+            opacity: 1
+        }
+        
+        .header .cta {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            box-shadow: var(--shadow);
+            font-weight: 700
+        }
+        
+        .header.is-scrolled {
+            backdrop-filter: saturate(140%) blur(10px);
+            background: rgba(11, 14, 20, .6);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .25)
+        }
+        
+        .menu-btn {
+            display: none;
+            background: #0000;
+            border: 0;
+            color: var(--text);
+            font-size: 28px
+        }
+        
+        @media (max-width:900px) {
+            .nav {
+                display: none
+            }
+            .menu-btn {
+                display: block
+            }
+            .mobile-nav {
+                position: fixed;
+                inset: 64px 12px auto 12px;
+                background: rgba(17, 22, 36, .95);
+                border: 1px solid #ffffff17;
+                border-radius: 16px;
+                box-shadow: var(--shadow);
+                display: none;
+                padding: 12px
+            }
+            .mobile-nav.open {
+                display: block
+            }
+            .mobile-nav a {
+                display: block;
+                padding: 14px 10px;
+                border-radius: 12px
+            }
+            .mobile-nav a:hover {
+                background: #ffffff0d
+            }
+        }
+        /* ===== Hero ===== */
+        
+        .hero {
+            position: relative;
+            min-height: 86vh;
+            display: grid;
+            place-items: center;
+            isolation: isolate
+        }
+        
+        .hero-media {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px
+        }
+        
+        .hero-media::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 25% 15%, #00000020 0%, #0000 30%), linear-gradient(to bottom, #00000066, #0b0e14 85%)
+        }
+        
+        .hero-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(108%) contrast(104%)
+        }
+        
+        .hero-content {
+            max-width: var(--maxw);
+            width: 100%;
+            padding: 110px 20px 40px
+        }
+        
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #ffffff12;
+            border: 1px solid #ffffff1e;
+            border-radius: 999px;
+            font-size: 14px
+        }
+        
+        .hero h1 {
+            font-size: clamp(32px, 5vw, 56px);
+            margin: 14px 0 10px
+        }
+        
+        .hero p {
+            max-width: 750px;
+            font-size: 18px;
+            color: var(--accent)
+        }
+        
+        .search {
+            margin-top: 24px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+        
+        .search input {
+            flex: 1 1 320px;
+            padding: 14px 16px;
+            border-radius: 999px;
+            border: 1px solid #ffffff33;
+            background: #0b0e14b3;
+            color: var(--text)
+        }
+        
+        .search button {
+            padding: 14px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            border: 0;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            color: #fff
+        }
+        /* ===== Sección base ===== */
+        
+        section {
+            padding: 64px 20px
+        }
+        
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto
+        }
+        
+        .section-head {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 22px
+        }
+        
+        .section-head h2 {
+            font-size: clamp(24px, 3.5vw, 36px);
+            margin: 0
+        }
+        
+        .section-head p {
+            color: var(--muted);
+            max-width: 680px
+        }
+        /* ===== Destinos (cards) ===== */
+        
+        .grid {
+            display: grid;
+            gap: 18px
+        }
+        
+        .grid.destinos {
+            grid-template-columns: repeat(12, 1fr)
+        }
+        
+        .card {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius);
+            background: var(--card);
+            border: 1px solid #ffffff14;
+            box-shadow: var(--shadow)
+        }
+        
+        .card.media {
+            min-height: 240px
+        }
+        
+        .card.media>img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .6s ease
+        }
+        
+        .card:hover.media>img {
+            transform: scale(1.05)
+        }
+        
+        .card .label {
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: #00000080;
+            border: 1px solid #ffffff30;
+            font-size: 13px
+        }
+        
+        .card .title {
+            position: absolute;
+            left: 14px;
+            bottom: 14px;
+            font-weight: 800;
+            font-size: 22px;
+            text-shadow: 0 8px 18px #000
+        }
+        
+        .span-6 {
+            grid-column: span 6
+        }
+        
+        .span-4 {
+            grid-column: span 4
+        }
+        
+        .span-3 {
+            grid-column: span 3
+        }
+        
+        .span-8 {
+            grid-column: span 8
+        }
+        
+        @media (max-width:900px) {
+            .grid.destinos {
+                grid-template-columns: repeat(2, 1fr)
+            }
+            .span-6,
+            .span-4,
+            .span-3,
+            .span-8 {
+                grid-column: span 1
+            }
+        }
+        /* ===== Experiencias (chips + icons) ===== */
+        
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px
+        }
+        
+        .chip {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: #ffffff10;
+            border: 1px solid #ffffff1d;
+            cursor: pointer;
+            user-select: none
+        }
+        
+        .chip.active {
+            background: linear-gradient(135deg, #ffffff18, #ffffff06)
+        }
+        
+        .xp-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin-top: 18px
+        }
+        
+        .xp {
+            border: 1px solid #ffffff14;
+            background: linear-gradient(180deg, #131a2a, #0f1523);
+            border-radius: var(--radius-sm);
+            padding: 18px;
+            min-height: 130px
+        }
+        
+        .xp h3 {
+            margin: 6px 0 4px;
+            font-size: 18px
+        }
+        
+        .xp p {
+            color: var(--muted);
+            font-size: 14px
+        }
+        
+        .icon {
+            font-size: 26px
+        }
+        
+        @media (max-width:1100px) {
+            .xp-grid {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
+        
+        @media (max-width:650px) {
+            .xp-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+        /* ===== Itinerarios (tabs) ===== */
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+        
+        .tab {
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: #ffffff0d;
+            border: 1px solid #ffffff1a;
+            cursor: pointer
+        }
+        
+        .tab[aria-selected="true"] {
+            outline: 2px solid var(--brand)
+        }
+        
+        .itinerarios {
+            margin-top: 14px;
+            display: grid;
+            gap: 16px
+        }
+        
+        .it-card {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: 1fr 2fr;
+            background: linear-gradient(180deg, #121827, #0f1421);
+            border: 1px solid #ffffff14;
+            border-radius: 16px;
+            overflow: hidden
+        }
+        
+        .it-card img {
+            height: 100%;
+            object-fit: cover
+        }
+        
+        .it-card .it-body {
+            padding: 16px
+        }
+        
+        .it-card h3 {
+            margin: 0 0 6px
+        }
+        
+        .it-card p {
+            color: var(--muted)
+        }
+        
+        @media (max-width:800px) {
+            .it-card {
+                grid-template-columns: 1fr
+            }
+        }
+        /* ===== Galería (masonry + modal) ===== */
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+        
+        .filters button {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: #ffffff10;
+            border: 1px solid #ffffff1d;
+            color: var(--text);
+            cursor: pointer
+        }
+        
+        .filters button.active {
+            outline: 2px solid var(--brand)
+        }
+        
+        .masonry {
+            column-count: 4;
+            column-gap: 14px;
+            margin-top: 14px
+        }
+        
+        .masonry .tile {
+            break-inside: avoid;
+            margin-bottom: 14px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #ffffff1a
+        }
+        
+        .masonry .tile img {
+            width: 100%;
+            height: auto;
+            display: block
+        }
+        
+        @media (max-width:1100px) {
+            .masonry {
+                column-count: 3
+            }
+        }
+        
+        @media (max-width:800px) {
+            .masonry {
+                column-count: 2
+            }
+        }
+        
+        @media (max-width:520px) {
+            .masonry {
+                column-count: 1
+            }
+        }
+        /* Modal */
+        
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            place-items: center;
+            background: #000000bf;
+            z-index: 60
+        }
+        
+        .modal.open {
+            display: grid
+        }
+        
+        .modal figure {
+            max-width: min(1100px, 92vw);
+            max-height: 86vh
+        }
+        
+        .modal img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px
+        }
+        
+        .modal .close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 28px;
+            background: #ffffff20;
+            border: 1px solid #ffffff3a;
+            color: #fff;
+            border-radius: 999px;
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            cursor: pointer
+        }
+        /* ===== Newsletter ===== */
+        
+        .newsletter {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 18px;
+            background: linear-gradient(135deg, #1a2235, #121a2c);
+            border: 1px solid #ffffff1c;
+            border-radius: 18px;
+            padding: 18px
+        }
+        
+        .newsletter p {
+            color: var(--accent)
+        }
+        
+        .newsletter form {
+            display: flex;
+            gap: 10px
+        }
+        
+        .newsletter input {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #ffffff30;
+            background: #0b0e14b3;
+            color: var(--text)
+        }
+        
+        .newsletter button {
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 0;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            color: #fff
+        }
+        
+        @media (max-width:900px) {
+            .newsletter {
+                grid-template-columns: 1fr
+            }
+        }
+        /* ===== Footer ===== */
+        
+        footer {
+            padding: 40px 20px 80px;
+            border-top: 1px solid #ffffff14;
+            margin-top: 40px
+        }
+        
+        .foot {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 2fr 1fr 1fr 1fr
+        }
+        
+        .foot h4 {
+            margin: 6px 0 10px
+        }
+        
+        .foot a {
+            display: block;
+            color: var(--muted);
+            padding: 6px 0
+        }
+        
+        .foot small {
+            color: #94a3b8
+        }
+        
+        @media (max-width:950px) {
+            .foot {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+        /* ===== Utilities ===== */
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0)
+        }
+        
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px
+        }
+        
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 999px;
+            background: #ffffff12;
+            border: 1px solid #ffffff22
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all .6s ease
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: none
+        }
+        /* ===== Mapa ===== */
+        
+        #mapa {
+            width: 100%;
+            height: 420px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #ffffff1a;
+            box-shadow: var(--shadow)
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== Header ===== -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="#top" class="brand" aria-label="Ir al inicio">
+                <span class="brand-badge" aria-hidden="true">AR</span>
+                <span>Visita <span style="color:var(--brand)">Argentina</span></span>
+            </a>
+            <nav class="nav" aria-label="Principal">
+                <a href="#destinos">Destinos</a>
+                <a href="#experiencias">Experiencias</a>
+                <a href="#itinerarios-sec">Itinerarios</a>
+                <a href="#galeria">Galería</a>
+                <a href="#gastronomia">Gastronomía</a>
+                <a href="#eventos">Eventos</a>
+                <a href="#mapa-sec">Mapa</a>
+            </nav>
+            <button class="menu-btn" id="menuBtn" aria-controls="mobileNav" aria-expanded="false" aria-label="Abrir menú">☰</button>
+            <a class="cta" href="#newsletter">Recibir novedades</a>
+        </div>
+        <div id="mobileNav" class="mobile-nav" role="dialog" aria-modal="true" aria-label="Menú">
+            <a href="#destinos">Destinos</a>
+            <a href="#experiencias">Experiencias</a>
+            <a href="#itinerarios-sec">Itinerarios</a>
+            <a href="#galeria">Galería</a>
+            <a href="#gastronomia">Gastronomía</a>
+            <a href="#eventos">Eventos</a>
+            <a href="#mapa-sec">Mapa</a>
+        </div>
+    </header>
+
+    <!-- ===== Hero ===== -->
+    <main id="top"></main>
+    <section class="hero" aria-label="Destacado">
+        <div class="hero-media" aria-hidden="true">
+            <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/df/b4/3e/upsala-glacier.jpg?w=1200&h=700&s=1" alt="Glaciar Perito Moreno, Patagonia" loading="eager" />
+        </div>
+        <div class="hero-content">
+            <span class="hero-kicker">🇦🇷 Pasión sudamericana</span>
+            <h1>Argentina: naturaleza épica, ciudades vibrantes y sabores inolvidables</h1>
+            <p>Desde la energía de Buenos Aires hasta los viñedos de Mendoza, de las Cataratas del Iguazú a los picos patagónicos: descubre experiencias únicas para tu próximo viaje.</p>
+            <form class="search" role="search" aria-label="Buscar atracciones">
+                <label class="sr-only" for="q">Buscar</label>
+                <input id="q" name="q" placeholder="Busca por ciudad, parque, vino, tango…" autocomplete="off" />
+                <button type="submit">Explorar</button>
+                <span aria-live="polite" id="searchResult" class="sr-only"></span>
+            </form>
+        </div>
+    </section>
+
+    <!-- ===== Destinos ===== -->
+    <section id="destinos" aria-labelledby="destinos-title">
+        <div class="container">
+            <div class="section-head">
+                <h2 id="destinos-title">Destinos imperdibles</h2>
+                <p>Selección inicial para empezar tu ruta. Haz clic para conocer más y ver sugerencias de qué hacer.</p>
+            </div>
+            <div class="grid destinos">
+                <article class="card media span-6 fade-in" data-city="Buenos Aires" tabindex="0">
+                    <span class="label">Cultura &amp; Noche</span>
+                    <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=1600&auto=format&fit=crop" alt="Obelisco de Buenos Aires al atardecer" loading="lazy" />
+                    <h3 class="title">Buenos Aires</h3>
+                </article>
+                <article class="card media span-3 fade-in" data-city="Mendoza" tabindex="0">
+                    <span class="label">Vinos &amp; Andes</span>
+                    <img src="https://images.unsplash.com/photo-1570393080660-de7c4d4be533?q=80&w=1200&auto=format&fit=crop" alt="Viñedos con la cordillera de los Andes en Mendoza" loading="lazy" />
+                    <h3 class="title">Mendoza</h3>
+                </article>
+                <article class="card media span-3 fade-in" data-city="Bariloche" tabindex="0">
+                    <span class="label">Lagos &amp; Nieve</span>
+                    <img src="https://images.unsplash.com/photo-1563996768609-2f97339b25d7?q=80&w=1200&auto=format&fit=crop" alt="Lago Nahuel Huapi en Bariloche" loading="lazy" />
+                    <h3 class="title">Bariloche</h3>
+                </article>
+                <article class="card media span-4 fade-in" data-city="Ushuaia" tabindex="0">
+                    <span class="label">Fin del Mundo</span>
+                    <img src="https://images.unsplash.com/photo-1609364485820-f447c87bb3ec?q=80&w=1200&auto=format&fit=crop" alt="Montañas nevadas cerca de Ushuaia" loading="lazy" />
+                    <h3 class="title">Ushuaia</h3>
+                </article>
+                <article class="card media span-4 fade-in" data-city="Iguazú" tabindex="0">
+                    <span class="label">Maravilla Natural</span>
+                    <img src="https://images.unsplash.com/photo-1565772839331-1b7ebfd449a7?q=80&w=1200&auto=format&fit=crop" alt="Cataratas del Iguazú lado argentino" loading="lazy" />
+                    <h3 class="title">Iguazú</h3>
+                </article>
+                <article class="card media span-4 fade-in" data-city="Salta" tabindex="0">
+                    <span class="label">Norte Andino</span>
+                    <img src="https://images.unsplash.com/photo-1576566588021-8f82b1a1dc34?q=80&w=1200&auto=format&fit=crop" alt="Colores de los cerros en Salta y Jujuy" loading="lazy" />
+                    <h3 class="title">Salta &amp; Jujuy</h3>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Experiencias ===== -->
+    <section id="experiencias" aria-labelledby="xp-title">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <h2 id="xp-title">Experiencias para todos los estilos</h2>
+                    <div class="chips" role="tablist" aria-label="Filtros de experiencias">
+                        <button class="chip active" role="tab" aria-selected="true" data-filter="all">Todas</button>
+                        <button class="chip" role="tab" data-filter="cultura">Cultura</button>
+                        <button class="chip" role="tab" data-filter="gastronomia">Gastronomía</button>
+                        <button class="chip" role="tab" data-filter="naturaleza">Naturaleza</button>
+                        <button class="chip" role="tab" data-filter="aventura">Aventura</button>
+                        <button class="chip" role="tab" data-filter="vinos">Vinos</button>
+                    </div>
+                </div>
+                <p>Ponle play al tango, prueba empanadas y malbecs, camina sobre hielo milenario y navega lagos andinos. Elige un tema y mira ideas.</p>
+            </div>
+            <div class="xp-grid" id="xpGrid">
+                <article class="xp fade-in" data-tags="cultura">
+                    <div class="icon" aria-hidden="true">🎭</div>
+                    <h3>Noche porteña &amp; tango</h3>
+                    <p>Casas de tango, cafés históricos, San Telmo y Palermo hasta la madrugada.</p>
+                </article>
+                <article class="xp fade-in" data-tags="gastronomia vinos">
+                    <div class="icon" aria-hidden="true">🍷</div>
+                    <h3>Ruta del Malbec</h3>
+                    <p>Degustaciones en Luján de Cuyo y Valle de Uco con vistas a los Andes.</p>
+                </article>
+                <article class="xp fade-in" data-tags="naturaleza aventura">
+                    <div class="icon" aria-hidden="true">🧊</div>
+                    <h3>Glaciares de la Patagonia</h3>
+                    <p>Pasarelas y mini-trekking en el Perito Moreno, navegaciones en el Lago Argentino.</p>
+                </article>
+                <article class="xp fade-in" data-tags="naturaleza">
+                    <div class="icon" aria-hidden="true">🌈</div>
+                    <h3>Cerros multicolor</h3>
+                    <p>Quebrada de Humahuaca, Purmamarca y Salinas Grandes en el noroeste.</p>
+                </article>
+                <article class="xp fade-in" data-tags="aventura naturaleza">
+                    <div class="icon" aria-hidden="true">⛷️</div>
+                    <h3>Nieve y lagos de Bariloche</h3>
+                    <p>Circuito Chico, Cerro Catedral y travesías en kayak por el Nahuel Huapi.</p>
+                </article>
+                <article class="xp fade-in" data-tags="naturaleza">
+                    <div class="icon" aria-hidden="true">💦</div>
+                    <h3>Fuerza de Iguazú</h3>
+                    <p>Pasarelas en la Garganta del Diablo y paseo en lancha bajo las caídas.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Itinerarios (tabs) ===== -->
+    <section id="itinerarios-sec" aria-labelledby="rot-title">
+        <div class="container">
+            <div class="section-head">
+                <h2 id="rot-title">Ideas de itinerarios</h2>
+                <p>Tres propuestas para combinar ciudad y naturaleza en equilibrio.</p>
+            </div>
+            <div class="tabs" role="tablist" aria-label="Itinerarios">
+                <button class="tab" role="tab" aria-selected="true" data-tab="clasico">Clásico 7 días</button>
+                <button class="tab" role="tab" data-tab="vinos">Malbec &amp; Andes</button>
+                <button class="tab" role="tab" data-tab="patagonia">Patagonia Esencial</button>
+            </div>
+            <div class="itinerarios" id="itinerarios">
+                <!-- JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Gastronomía (NUEVA) ===== -->
+    <section id="gastronomia" aria-labelledby="gast-title">
+        <div class="container">
+            <div class="section-head">
+                <h2 id="gast-title">Gastronomía argentina</h2>
+                <p>Sabores regionales que cuentan historias: del asado criollo a los vinos de altura.</p>
+            </div>
+            <div class="grid" style="grid-template-columns:repeat(3,1fr); gap:16px">
+                <article class="xp fade-in">
+                    <div class="pill">🥩 Asado</div>
+                    <p>La tradición parrillera: cortes a las brasas, chimichurri y reunión con amigos.</p>
+                </article>
+                <article class="xp fade-in">
+                    <div class="pill">🥟 Empanadas</div>
+                    <p>De Salta a Tucumán: horneadas o fritas, con rellenos regionales.</p>
+                </article>
+                <article class="xp fade-in">
+                    <div class="pill">🍷 Malbec &amp; Torrontés</div>
+                    <p>Iconos argentinos: tintos mendocinos y blancos aromáticos del noroeste.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Eventos y Festivales (NUEVA) ===== -->
+    <section id="eventos" aria-labelledby="ev-title">
+        <div class="container">
+            <div class="section-head">
+                <h2 id="ev-title">Eventos y festivales</h2>
+                <p>Un calendario vivo de cultura, música, tradición y literatura durante todo el año.</p>
+            </div>
+            <div class="chips" id="evFiltros" role="tablist" aria-label="Filtrar por mes">
+                <button class="chip active" role="tab" aria-selected="true" data-mes="all">Todos</button>
+                <button class="chip" role="tab" data-mes="1">Enero</button>
+                <button class="chip" role="tab" data-mes="2">Febrero</button>
+                <button class="chip" role="tab" data-mes="3">Marzo</button>
+                <button class="chip" role="tab" data-mes="4">Abril</button>
+                <button class="chip" role="tab" data-mes="5">Mayo</button>
+                <button class="chip" role="tab" data-mes="6">Junio</button>
+                <button class="chip" role="tab" data-mes="7">Julio</button>
+                <button class="chip" role="tab" data-mes="8">Agosto</button>
+                <button class="chip" role="tab" data-mes="9">Septiembre</button>
+                <button class="chip" role="tab" data-mes="10">Octubre</button>
+                <button class="chip" role="tab" data-mes="11">Noviembre</button>
+                <button class="chip" role="tab" data-mes="12">Diciembre</button>
+            </div>
+            <div class="grid" id="eventList" style="grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px"></div>
+        </div>
+    </section>
+
+    <!-- ===== Mapa Interactivo (NUEVA) ===== -->
+    <section id="mapa-sec" aria-labelledby="map-title">
+        <div class="container">
+            <div class="section-head">
+                <h2 id="map-title">Mapa interactivo</h2>
+                <p>Explora regiones y puntos clave. Haz clic en los marcadores para ver tips rápidos.</p>
+            </div>
+            <div id="mapa" role="application" aria-label="Mapa de Argentina"></div>
+        </div>
+    </section>
+
+    <!-- ===== Galería ===== -->
+    <section id="galeria" aria-labelledby="gal-title">
+        <div class="container">
+            <div class="section-head">
+                <h2 id="gal-title">Galería para inspirar</h2>
+                <div class="filters" role="tablist" aria-label="Filtrar galería">
+                    <button class="active" role="tab" data-cat="all">Todo</button>
+                    <button role="tab" data-cat="ciudades">Ciudades</button>
+                    <button role="tab" data-cat="naturaleza">Naturaleza</button>
+                    <button role="tab" data-cat="vinos">Vinos</button>
+                </div>
+            </div>
+            <div class="masonry" id="masonry">
+                <!-- JS -->
+            </div>
+        </div>
+
+        <!-- Modal de la galería -->
+        <div class="modal" id="modal" aria-hidden="true" aria-label="Visualización de imagen">
+            <button class="close" id="modalClose" aria-label="Cerrar">✕</button>
+            <figure>
+                <img id="modalImg" alt="Imagen destacada" />
+                <figcaption id="modalCaption" style="margin-top:8px; color:#cbd5e1"></figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <!-- ===== Planifica ===== -->
+    <section id="planeja" aria-labelledby="plan-title">
+        <div class="container">
+            <div class="section-head">
+                <h2 id="plan-title">Planifica tu viaje</h2>
+                <p>Consejos prácticos para organizar tu experiencia con tranquilidad.</p>
+            </div>
+            <div class="grid" style="grid-template-columns:repeat(3,1fr); gap:16px">
+                <article class="xp fade-in">
+                    <div class="pill">🕐 Mejor época</div>
+                    <p>Primavera (sep-nov) y otoño (mar-may) equilibran clima y precios. En invierno hay nieve en el sur; en verano, ideal la Patagonia costera.</p>
+                </article>
+                <article class="xp fade-in">
+                    <div class="pill">💳 Moneda &amp; pagos</div>
+                    <p>Lleva tarjeta y algo de efectivo. Consulta con tu banco sobre comisiones y cambio antes de viajar.</p>
+                </article>
+                <article class="xp fade-in">
+                    <div class="pill">📶 Conectividad</div>
+                    <p>Considera eSIM o chip local para datos. La mayoría de las ciudades tiene buena cobertura 4G/5G.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Newsletter ===== -->
+    <section id="newsletter" aria-labelledby="news-title">
+        <div class="container">
+            <div class="newsletter">
+                <div>
+                    <h2 id="news-title">Recibe una guía gratuita de Argentina</h2>
+                    <p>Itinerarios sugeridos, mapa offline y checklist — directo a tu correo.</p>
+                </div>
+                <form id="newsForm" novalidate>
+                    <label class="sr-only" for="email">Tu e-mail</label>
+                    <input id="email" name="email" type="email" placeholder="tu@email.com" required />
+                    <button type="submit">Quiero recibir</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="foot">
+            <div>
+                <div class="brand"><span class="brand-badge">AR</span> Visita <span style="color:var(--brand)">Argentina</span></div>
+                <small>Proyecto demostrativo inspirado en el estilo de VisitMexico, creado con HTML, CSS y JavaScript puros.</small>
+            </div>
+            <div>
+                <h4>Descubre</h4>
+                <a href="#destinos">Destinos</a>
+                <a href="#experiencias">Experiencias</a>
+                <a href="#itinerarios-sec">Itinerarios</a>
+            </div>
+            <div>
+                <h4>Planifica</h4>
+                <a href="#planeja">Consejos</a>
+                <a href="#newsletter">Guía gratuita</a>
+            </div>
+            <div>
+                <h4>Síguenos</h4>
+                <a href="#">Instagram</a>
+                <a href="#">YouTube</a>
+                <a href="#">TikTok</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== Utilidades =====
+        const qs = (s, el = document) => el.querySelector(s);
+        const qsa = (s, el = document) => Array.from(el.querySelectorAll(s));
+
+        // Header: estado scrolled + revelar fade-in
+        const header = qs('#header');
+        const onScroll = () => {
+            header.classList.toggle('is-scrolled', window.scrollY > 12);
+            qsa('.fade-in').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < innerHeight - 80) el.classList.add('visible');
+            });
+        }
+        addEventListener('scroll', onScroll, {
+            passive: true
+        });
+        addEventListener('load', onScroll);
+
+        // Menú móvil
+        const menuBtn = qs('#menuBtn');
+        const mobileNav = qs('#mobileNav');
+        menuBtn.addEventListener('click', () => {
+            const open = mobileNav.classList.toggle('open');
+            menuBtn.setAttribute('aria-expanded', open);
+        });
+        mobileNav.addEventListener('click', e => {
+            if (e.target.tagName === 'A') mobileNav.classList.remove('open');
+        });
+
+        // Búsqueda simple (mock)
+        qs('.search').addEventListener('submit', e => {
+            e.preventDefault();
+            const term = qs('#q').value.trim();
+            const result = term ? `Resultados para "${term}" — (demostración)` : 'Escribe algo para buscar';
+            const live = qs('#searchResult');
+            live.textContent = result;
+            alert(result);
+        });
+
+        // Filtrar experiencias
+        const chips = qsa('.chip');
+        const xpCards = qsa('.xp');
+        chips.forEach(chip => chip.addEventListener('click', () => {
+            chips.forEach(c => {
+                c.classList.remove('active');
+                c.setAttribute('aria-selected', 'false')
+            });
+            chip.classList.add('active');
+            chip.setAttribute('aria-selected', 'true');
+            const filter = chip.dataset.filter;
+            xpCards.forEach(card => {
+                const show = filter === 'all' || card.dataset.tags.includes(filter);
+                card.style.display = show ? '' : 'none';
+            });
+        }));
+
+        // Itinerarios (tabs + contenido)
+        const ITINERARIOS = {
+            clasico: [{
+                img: 'https://images.unsplash.com/photo-1568667256549-094345857637?q=80&w=1200&auto=format&fit=crop',
+                titulo: 'Días 1–3 · Buenos Aires',
+                texto: 'Centro histórico, La Boca, San Telmo y noche de tango. Escapada al Delta del Tigre si hay tiempo.'
+            }, {
+                img: 'https://images.unsplash.com/photo-1576511454756-25494d31bfb2?q=80&w=1200&auto=format&fit=crop',
+                titulo: 'Días 4–5 · Mendoza',
+                texto: 'Bodegas en Luján de Cuyo y Valle de Uco, almuerzo maridado y miradores andinos.'
+            }, {
+                img: 'https://images.unsplash.com/photo-1563996768609-2f97339b25d7?q=80&w=1200&auto=format&fit=crop',
+                titulo: 'Días 6–7 · Bariloche',
+                texto: 'Circuito Chico, cerro Campanario y navegación por el Nahuel Huapi.'
+            }],
+            vinos: [{
+                img: 'https://images.unsplash.com/photo-1601134467661-3d775b999c8b?q=80&w=1200&auto=format&fit=crop',
+                titulo: 'Días 1–2 · Buenos Aires gourmet',
+                texto: 'Parrillas, cafés notables y mercados. Clase de empanadas para abrir el apetito.'
+            }, {
+                img: 'https://images.unsplash.com/photo-1616692081040-86e2ea0759d8?q=80&w=1200&auto=format&fit=crop',
+                titulo: 'Días 3–5 · Mendoza & malbec',
+                texto: 'Tour premium, degustaciones guiadas y atardecer entre viñedos con los Andes al fondo.'
+            }, {
+                img: 'https://images.unsplash.com/photo-1603491656337-2cc5ab264c60?q=80&w=1200&auto=format&fit=crop',
+                titulo: 'Días 6–7 · Salta & Cafayate',
+                texto: 'Bodegas de altura, Quebrada de las Conchas y centro colonial de Salta.'
+            }],
+            patagonia: [{
+                img: 'https://images.unsplash.com/photo-1535990371004-1ff07d2b7a3d?q=80&w=1200&auto=format&fit=crop',
+                titulo: 'Días 1–2 · El Calafate',
+                texto: 'Pasarelas del Perito Moreno y navegación por el Lago Argentino.'
+            }, {
+                img: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop',
+                titulo: 'Días 3–5 · El Chaltén',
+                texto: 'Senderos al Fitz Roy (Laguna Capri, de los Tres) y miradores glaciares.'
+            }, {
+                img: 'https://images.unsplash.com/photo-1558980664-10ec7f89d828?q=80&w=1200&auto=format&fit=crop',
+                titulo: 'Días 6–7 · Ushuaia',
+                texto: 'Canal Beagle, Parque Tierra del Fuego y, si se puede, navegación a pingüineras.'
+            }]
+        };
+
+        function renderItinerario(key) {
+            const wrap = qs('#itinerarios');
+            wrap.innerHTML = '';
+            ITINERARIOS[key].forEach(item => {
+                const el = document.createElement('article');
+                el.className = 'it-card fade-in visible';
+                el.innerHTML = `
+          <img src="${item.img}" alt="Imagen del itinerario" loading="lazy"/>
+          <div class="it-body">
+            <h3>${item.titulo}</h3>
+            <p>${item.texto}</p>
+            <a class="btn-link" href="#newsletter">Quiero este itinerario →</a>
+          </div>`;
+                wrap.appendChild(el);
+            });
+        }
+        renderItinerario('clasico');
+        qsa('.tab').forEach(tab => tab.addEventListener('click', () => {
+            qsa('.tab').forEach(t => t.setAttribute('aria-selected', 'false'));
+            tab.setAttribute('aria-selected', 'true');
+            renderItinerario(tab.dataset.tab);
+        }));
+
+        // Galería (dataset + filtros + modal)
+        const GALLERY = [{
+            cat: 'ciudades',
+            src: 'https://images.unsplash.com/photo-1544989164-31dc3c645987?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Avenida 9 de Julio, Buenos Aires'
+        }, {
+            cat: 'ciudades',
+            src: 'https://images.unsplash.com/photo-1502800623860-2ed16291a8f4?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Arquitectura histórica de Salta'
+        }, {
+            cat: 'naturaleza',
+            src: 'https://images.unsplash.com/photo-1527786356707-8bdc3cc9222f?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Glaciar Perito Moreno'
+        }, {
+            cat: 'naturaleza',
+            src: 'https://images.unsplash.com/photo-1503435824048-a799a3a84bf7?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Cataratas del Iguazú (lado argentino)'
+        }, {
+            cat: 'naturaleza',
+            src: 'https://images.unsplash.com/photo-1533513977673-169f40229c39?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Quebrada de Humahuaca, Jujuy'
+        }, {
+            cat: 'vinos',
+            src: 'https://images.unsplash.com/photo-1509395062183-67c5ad6faff9?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Degustación en Mendoza'
+        }, {
+            cat: 'ciudades',
+            src: 'https://images.unsplash.com/photo-1592366522968-b3250efed4fc?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Barrio La Boca'
+        }, {
+            cat: 'naturaleza',
+            src: 'https://images.unsplash.com/photo-1519682337058-a94d519337bc?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Lagos de la Patagonia'
+        }, {
+            cat: 'vinos',
+            src: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Barricas de roble'
+        }, {
+            cat: 'ciudades',
+            src: 'https://images.unsplash.com/photo-1526404953185-020bcb238c31?q=80&w=1200&auto=format&fit=crop',
+            cap: 'Cafés de barrio en BA'
+        }];
+
+        const masonry = qs('#masonry');
+
+        function renderGallery(cat = 'all') {
+            masonry.innerHTML = '';
+            GALLERY.filter(g => cat === 'all' || g.cat === cat).forEach(g => {
+                const tile = document.createElement('div');
+                tile.className = 'tile fade-in';
+                tile.innerHTML = `<img src="${g.src}" alt="${g.cap}" loading="lazy"/>`;
+                tile.addEventListener('click', () => openModal(g.src, g.cap));
+                masonry.appendChild(tile);
+            });
+            onScroll();
+        }
+        renderGallery('all');
+
+        qsa('.filters [role="tab"]').forEach(btn => btn.addEventListener('click', () => {
+            qsa('.filters button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderGallery(btn.dataset.cat);
+        }));
+
+        // Modal de galería
+        const modal = qs('#modal');
+        const modalImg = qs('#modalImg');
+        const modalCaption = qs('#modalCaption');
+        const modalClose = qs('#modalClose');
+
+        function openModal(src, cap) {
+            modalImg.src = src;
+            modalCaption.textContent = cap;
+            modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeModal() {
+            modal.classList.remove('open');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', e => {
+            if (e.target === modal) closeModal();
+        });
+        addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Newsletter (validación simple)
+        qs('#newsForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const email = qs('#email').value.trim();
+            const ok = /.+@.+\..+/.test(email);
+            alert(ok ? '¡Gracias! Pronto recibirás la guía.' : 'Por favor, ingresa un e-mail válido.');
+        });
+
+        // Accesibilidad: enfocar tarjetas de destinos
+        qsa('.card.media').forEach(card => card.addEventListener('keypress', e => {
+            if (e.key === 'Enter') alert(`Abriendo guía de ${card.dataset.city} (demostración)`);
+        }));
+
+        // ===== Eventos (dataset + filtro por mes) =====
+        const EVENTOS = [{
+            mes: 3,
+            titulo: 'Feria Internacional del Libro (BA)',
+            desc: 'Uno de los eventos literarios más grandes de Latinoamérica.',
+            lugar: 'Buenos Aires'
+        }, {
+            mes: 3,
+            titulo: 'Vendimia',
+            desc: 'Fiesta Nacional de la Vendimia con desfiles y espectáculos.',
+            lugar: 'Mendoza'
+        }, {
+            mes: 1,
+            titulo: 'Festival Nacional del Folklore',
+            desc: 'Cosquín vibra con música y danzas tradicionales.',
+            lugar: 'Córdoba'
+        }, {
+            mes: 2,
+            titulo: 'Carnaval de Gualeguaychú',
+            desc: 'Carrozas, comparsas y trajes brillantes.',
+            lugar: 'Entre Ríos'
+        }, {
+            mes: 10,
+            titulo: 'Buenos Aires Jazz',
+            desc: 'Conciertos y jam sessions por toda la ciudad.',
+            lugar: 'Buenos Aires'
+        }, {
+            mes: 8,
+            titulo: 'Nieve en Bariloche',
+            desc: 'Temporada alta para esquí y snowboard.',
+            lugar: 'Río Negro'
+        }];
+
+        const evList = qs('#eventList');
+
+        function renderEventos(mes = 'all') {
+            evList.innerHTML = '';
+            EVENTOS.filter(e => mes === 'all' || e.mes == mes).forEach(e => {
+                const card = document.createElement('article');
+                card.className = 'xp fade-in visible';
+                card.innerHTML = `<div class="pill">📅 ${e.titulo}</div><p>${e.desc}</p><small style="color:#94a3b8">${e.lugar}</small>`;
+                evList.appendChild(card);
+            });
+            if (!evList.children.length) {
+                const empty = document.createElement('div');
+                empty.style.color = '#94a3b8';
+                empty.textContent = 'No hay eventos para este mes (demostración).';
+                evList.appendChild(empty);
+            }
+        }
+        renderEventos('all');
+        qsa('#evFiltros .chip').forEach(btn => btn.addEventListener('click', () => {
+            qsa('#evFiltros .chip').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
+            btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+            renderEventos(btn.dataset.mes);
+        }));
+
+        // ===== Mapa (Leaflet) =====
+        const map = L.map('mapa', {
+            scrollWheelZoom: false
+        }).setView([-38.4161, -63.6167], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const puntos = [{
+            name: 'Buenos Aires',
+            coords: [-34.6037, -58.3816],
+            tip: 'Tango, cafés notables y arquitectura ecléctica.'
+        }, {
+            name: 'Mendoza',
+            coords: [-32.8895, -68.8458],
+            tip: 'Capital del malbec y puerta de los Andes.'
+        }, {
+            name: 'Bariloche',
+            coords: [-41.1335, -71.3103],
+            tip: 'Lagos, chocolate y deportes de invierno.'
+        }, {
+            name: 'Iguazú',
+            coords: [-25.6953, -54.4367],
+            tip: 'Cataratas: Garganta del Diablo y selva misionera.'
+        }, {
+            name: 'Salta',
+            coords: [-24.7821, -65.4232],
+            tip: 'Norte andino, cerros multicolor y cultura viva.'
+        }, {
+            name: 'Ushuaia',
+            coords: [-54.8019, -68.3029],
+            tip: 'Fin del Mundo: Canal Beagle y Tierra del Fuego.'
+        }];
+
+        puntos.forEach(p => {
+            L.marker(p.coords).addTo(map).bindPopup(`<strong>${p.name}</strong><br>${p.tip}`);
+        });
+    </script>
+</body>
+
+</html>
